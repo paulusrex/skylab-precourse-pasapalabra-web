@@ -78,4 +78,3 @@ document.getElementById('player2').innerHTML = player2.roscoHTML();
 player1.changeBgLetter('a', 'green');
 player2.changeBgLetter('b', 'red');
 player1.startTimer();
-

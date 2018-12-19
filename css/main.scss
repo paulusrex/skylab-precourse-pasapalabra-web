@@ -76,7 +76,6 @@ $start-angle: -90deg - (360deg / $num-letters) / 2 ;
   font-weight: 600;
   font-size: 2rem;
   margin: $letter-diameter / 2;  
-
 }
 
 @for $i from 1 to $num-letters {
