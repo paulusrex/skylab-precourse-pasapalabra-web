@@ -149,6 +149,10 @@ export class Player {
     return this.indexNextQuestion;
   }
 
+  getLetter() {
+    return this.questions[this.indexNextQuestion].letter;
+  }
+
   getQuestion() {
     return this.questions[this.indexNextQuestion].question;
   }

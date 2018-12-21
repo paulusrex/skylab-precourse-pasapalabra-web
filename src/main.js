@@ -25,7 +25,7 @@ class PlayerWeb extends Player {
 
   startTimer() {
     super.startTimer();
-    this.interval = setInterval(() => player1.changeTimer(),200);
+    this.interval = setInterval(() => this.changeTimer(),200);
   }
 
   stopTimer() {
@@ -44,6 +44,25 @@ class PlayerWeb extends Player {
     }
     result += '</div>';
     return result;
+  }
+
+  updateLetterColors() {
+    this.questions.forEach(item => {
+      const circle = document.getElementById(`letter-${this.idHTML}-${PlayerWeb.convertLetter(item.letter.toLowerCase())}`)
+      switch (item.status){
+        case NOT_ANSWERED:
+        case PASAPALABRA:
+          circle.style = "background-color: blue;"
+          break;
+        case CORRECT:
+          circle.style = "background-color: green;"
+          break;
+        case WRONG:
+        case END:
+          circle.style = "background-color: red;"
+          break;
+      }
+    })
   }
 }
 
@@ -73,8 +92,98 @@ const gameFinished = () => playerInTurn().isConceded()
   || playerWaiting().isConceded()
   || (playerInTurn().isFinished() && playerWaiting().isFinished());
 
-document.getElementById('player1').innerHTML = player1.roscoHTML();
-document.getElementById('player2').innerHTML = player2.roscoHTML();
-player1.changeBgLetter('a', 'green');
-player2.changeBgLetter('b', 'red');
-player1.startTimer();
+// HTML Tags
+const tagQuestionLetterCircle = document.getElementById("question-letter-circle");
+const tagQuestionLetterText = document.getElementById("question-letter-text");
+const tagQuestionText = document.getElementById("question-text");
+const tagAnswerText = document.getElementById("answer-text");
+const tagAnswerControlContainer = document.getElementById("answer-control-container");
+const tagConfirmWait = document.getElementById("confirm-wait");
+
+// auxiliary functions
+const confirmWaitDisplay = () => {
+  tagQuestionText.innerHTML = `¿${playerInTurn().name} preparado para continuar?`
+  tagQuestionLetterCircle.hidden = true;
+  tagAnswerText.hidden = true;
+  tagAnswerControlContainer.hidden = true;
+  tagConfirmWait.hidden = false;
+}
+const answeringDisplay = () => {
+  tagQuestionLetterCircle.hidden = false;
+  tagAnswerText.hidden = false;
+  tagAnswerControlContainer.hidden = false;
+  tagConfirmWait.hidden = true;
+}
+
+const confirmContinue = () => {
+  answeringDisplay();
+  playerInTurn().startTimer();
+  displayNextQuestion();
+}
+
+const displayNextQuestion = () => {
+  tagQuestionLetterText.innerHTML = playerInTurn().getLetter().toUpperCase();
+  tagQuestionText.innerHTML = playerInTurn().getQuestion();  
+  tagAnswerText.value = "";
+}
+
+const answering = () => {
+  const answer = document.getElementById("answer-text").value;
+  let changePlayer = false;
+  playerInTurn().checkAnswer(answer);
+  switch (playerInTurn().getStatus()) {
+    case WRONG:
+      tagQuestionText.innerHTML = `No! la respuesta correcta es ${playerInTurn().getAnswer()}`;
+      if (!playerWaiting().isFinished()) {
+        changePlayer = true;
+      }
+      playerInTurn().nextQuestion();
+      break;
+    case CORRECT:
+      if (playerInTurn().isCompleted()) {
+        changePlayer = true;
+      }
+      playerInTurn().nextQuestion();
+      displayNextQuestion();
+      break;
+    case PASAPALABRA:
+    tagQuestionText.innerHTML = `${playerInTurn().name} pasapalabra`;
+      if (!playerWaiting().isFinished()) {
+        changePlayer = true;
+      }
+      playerInTurn().nextQuestion();
+      break;
+    case TIMEOUT:
+    case END:
+      changePlayer = true;
+      break;
+    default:
+      break;
+  }  
+  playerInTurn().updateLetterColors();
+  if (changePlayer) {
+    playerInTurn().stopTimer();
+    setTimeout (confirmWaitDisplay, 3000);
+    inTurn = otherPlayerIndex();
+  }
+}
+
+// onclick assign
+document.getElementById("confirm-wait-yes").onclick = confirmContinue;
+document.getElementById("answer-send").onclick = answering;
+document.getElementById("answer-pasapalabra").onclick = ()=> {
+  document.getElementById("answer-text").value = "pasapalabra";
+  answering();
+}
+
+confirmWaitDisplay();
+
+let text = `<p>Bienvenidos ${players[0].name} y ${players[1].name}</p>`;
+text += `<p>En el sorteo ha salido que empiece ${playerInTurn().name}</p>`;
+text += '<p>Comienza pasapalabra!</p>';
+tagQuestionText.innerHTML = text;
+
+document.getElementById('container-player1').innerHTML = player1.roscoHTML();
+document.getElementById('container-player2').innerHTML = player2.roscoHTML();
+
+player1.updateLetterColors();

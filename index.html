@@ -8,20 +8,33 @@
     <title>Pasapalabra</title>
   </head>
   <body>
+    <nav>PASAPALABRA</nav>
     <div class="container">
-      <div class="player" id="player1">      
+      <div class="player" id="container-player1">      
       </div>
-      <div class="player" id="player2">          
+      <div class="player" id="container-player2">          
       </div>      
     </div>
+    <div class="questions" id="questions-container">
+      <div id="question-letter-container">
+        <div id="question-letter-circle">
+          <div id="question-letter-text">A</div>
+        </div>
+      </div>
+      <p id="question-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, atque!</p>
+      <input id="answer-text" placeholder="Respuesta">
+      <div id="answer-control-container">
+        <div id="answer-control">
+          <button id="answer-send">Responder</button>
+          <button id="answer-pasapalabra">Pasapalabra</button>
+          <button id="answer-end">Conceder la partida</button>
+        </div>
+      </div>
+      <div id="confirm-wait">
+          <button id="confirm-wait-yes">Pulsa para continuar</button>
+          <button id="confirm-wait-concede">Pulsa para conceder</button>
+        </div>
+      </div>
     <script src="./src/main.js" type="module"></script>
-    <button type="button" onclick="player1.startTimer()">Start Player 1</button>
-    <button type="button" onclick="btnClick()">Stop Player 1</button>
-    <script>
-      function btnClick() {
-        player1.stopTimer();
-      }
-    
-    </script>
   </body>
 </html>
