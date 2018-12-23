@@ -1,6 +1,6 @@
 import { NOT_ANSWERED, CORRECT, WRONG, PASAPALABRA, END, TIMEOUT } from './pasapalabra.js';
 import { Player } from './pasapalabra.js';
-import { baseQuestions, alterQuestions1, philosophyQuestions } from './questions.js';
+import { baseQuestions, alterQuestions, philosophyQuestions } from './questions.js';
 
 const colors = {  
   primary: '#2780E3',
@@ -12,7 +12,7 @@ const colors = {
   light:'#f8f9fa',
   dark:'#373a3c',
 }
-const allAlterQuestions = [...alterQuestions1, ...philosophyQuestions];
+const allAlterQuestions = [...alterQuestions, ...philosophyQuestions];
 
 class PlayerWeb extends Player {
   constructor (name, secondsToComplete, baseQ, alterQ, excludeQ, idHTML, answering, colors) {
