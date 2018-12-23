@@ -4,13 +4,17 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="https://bootswatch.com/4/lux/bootstrap.min.css"/>
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.3/cosmo/bootstrap.min.css" rel="stylesheet" integrity="sha384-3Ivskwia8Fui5tbQi+RW4DgTkJ8d+hW7mLe7Yk89ibmD9482VECh0WFof8kIEjwI" crossorigin="anonymous">
     <link rel="stylesheet" href="css/main.css" />
     <title>Pasapalabra</title>
   </head>
   <body>
-    <nav>PASAPALABRA</nav>
     <div class="container">
+      <div class="row">
+        <div class="col-sm-12">
+          <h1>PASAPALABRA</h1>
+        </div>
+      </div>
       <div class="row">
         <div class="col-sm-6">
           <div class="player" id="container-player1">
@@ -83,32 +87,47 @@
           </div>
         </div>
       </div>      
-      <div class="row">
-        <div class="col-sm-12">
-          <div class="card" id="questions-container">
-            <div id="question-letter-container">
-              <div id="question-letter-circle">
-                <div id="question-letter-text">A</div>
-              </div>
+      <div class="row hidden" id="question-container">
+        <div class="col-sm-1"></div>
+        <div class="col-sm-2">
+          <div id="question-letter-container">
+            <div class="bg-primary border-secondary" id="question-letter-circle">
+              <span id="question-letter-text">A</span>
             </div>
-            <p id="question-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, atque!</p>
-            <input class="form-control" id="answer-text" placeholder="Respuesta">
-            <div id="answer-control-container">
-              <div id="answer-control">
-                <button class="btn btn-primary" id="answer-send">Responder</button>
-                <button class="btn btn-secondary" id="answer-pasapalabra">Pasapalabra</button>
-                <button class="btn btn-warning" id="answer-end">Conceder la partida</button>
-              </div>
-            </div>         
-            <div id="confirm-wait">
-                <button class="btn btn-primary" id="confirm-wait-yes">Pulsa para continuar</button>
-                <button class="btn btn-warning" id="confirm-wait-concede">Pulsa para conceder</button>
+          </div>
+        </div>
+        <div class="col-sm-7">
+          <div class="card text-black">
+            <div class="card-header bg-secondary text-white">Pregunta</div>
+            <div class="card-body">
+              <p id="question-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, atque!</p>
+              <input class="form-control" id="answer-text" placeholder="Respuesta">
+              <br/>
+              <div id="answer-control-container">
+                <div id="answer-control">
+                  <button class="btn btn-outline-primary" id="answer-send">Responder</button>
+                  <button class="btn btn-outline-secondary" id="answer-pasapalabra">Pasapalabra</button>
+                  <button class="btn btn-outline-warning" id="answer-end">Conceder la partida</button>
+                </div>
+              </div>         
             </div>
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+          <div class="card" id="confirm-card">
+              <div class="card-body" id="confirm-wait">
+                <h5 class="card-title" id="confirm-title">Título</h5>
+                <p class="card-text" id="confirm-text">With supporting text below as a natural lead-in to additional content.</p>
+                <button class="btn btn-primary" id="confirm-wait-yes">Pulsa para continuar</button>
+                <button class="btn btn-warning" id="confirm-wait-concede">Pulsa para conceder</button>
+          </div>
+        </div>
+        </div>        
+        </div>
     </div>
-
     
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>

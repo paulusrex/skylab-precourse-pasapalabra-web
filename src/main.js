@@ -2,33 +2,39 @@ import { NOT_ANSWERED, CORRECT, WRONG, PASAPALABRA, END, TIMEOUT } from './pasap
 import { Player } from './pasapalabra.js';
 import { baseQuestions, alterQuestions1, philosophyQuestions } from './questions.js';
 
+const colors = {  
+  primary: '#2780E3',
+  secondary: '#373a3c',
+  success:'#3FB618',
+  info:'#9954BB',
+  warning:'#FF7518',
+  danger:'#FF0039',
+  light:'#f8f9fa',
+  dark:'#373a3c',
+}
 const allAlterQuestions = [...alterQuestions1, ...philosophyQuestions];
 
 class PlayerWeb extends Player {
-  constructor (name, secondsToComplete, baseQ, alterQ, excludeQ, idHTML, answering) {
+  constructor (name, secondsToComplete, baseQ, alterQ, excludeQ, idHTML, answering, colors) {
     super(name, secondsToComplete, baseQ, alterQ, excludeQ);
     this.idHTML = idHTML;
     this.answering = answering;
+    this.colors = colors;
   }
 
   static convertLetter(letter) {
     return (letter !== 'ñ' ? letter : 'nh').toLowerCase();
   }
 
-  changeBgLetter(letter, bgColor) {
-    const id = `letter-${this.idHTML}-${PlayerWeb.convertLetter(letter)}`;
-    document.getElementById(id).style = `background-color: ${bgColor};`
-  }
-
   activatePlayer() {
     const id = `letter-${this.idHTML}-${PlayerWeb.convertLetter(this.getLetter())}`;
     document.getElementById(id).style.animationIterationCount = "infinite";
-    document.getElementById(`timer-${this.idHTML}`).style = "background-color: blue; color: white;";
-    document.getElementById(`name-${this.idHTML}`).style = "background-color: blue; color: white;";
+    document.getElementById(`timer-${this.idHTML}`).style = `background-color: ${this.colors.primary}; color: white;`;
+    document.getElementById(`name-${this.idHTML}`).style = `background-color: ${this.colors.primary}; color: white;`;
   }
 
   changeTimer() {
-    document.getElementById(`timer-${this.idHTML}`).innerHTML = this.secondsRemaining().toString();
+    document.getElementById(`timer-${this.idHTML}`).innerHTML = this.secondsRemaining().toString() + '"';
     if (this.timeRemaining() < 0) {
       clearInterval(this.interval);
       this.answering(
@@ -47,19 +53,6 @@ class PlayerWeb extends Player {
     clearInterval(this.interval);
   }
 
-  roscoHTML() {
-    let result = `
-      <header id="name-${this.idHTML}">${this.name}</header>
-      <span class="timer" id="timer-${this.idHTML}">${this.secondsRemaining()}</span>
-      <div class="donut">`;
-    for (let i = 0; i < this.questions.length; i++) {
-      const letter = PlayerWeb.convertLetter(this.questions[i].letter);
-      result += `<div class="letter" id="letter-${this.idHTML}-${letter}">${this.questions[i].letter.toUpperCase()}</div>`
-    }
-    result += '</div>';
-    return result;
-  }
-
   updateLetterColors() {
     document.getElementById(`timer-${this.idHTML}`).style = "";
     document.getElementById(`name-${this.idHTML}`).style = "";
@@ -69,14 +62,14 @@ class PlayerWeb extends Player {
         case TIMEOUT:
         case NOT_ANSWERED:
         case PASAPALABRA:
-          circle.style = "background-color: blue; animation-iteration: 0;"
+          circle.style = `background-color: ${this.colors.primary}; animation-iteration: 0;`
           break;
         case CORRECT:
-          circle.style = "background-color: green;"
+          circle.style =  `background-color: ${this.colors.success};`;
           break;
         case WRONG:
         case END:
-          circle.style = "background-color: red;"
+          circle.style = `background-color: ${this.colors.danger};`;
           break;
       }
     })
@@ -84,26 +77,26 @@ class PlayerWeb extends Player {
 }
 
 // HTML Tags
-const tagQuestionLetterCircle = document.getElementById("question-letter-circle");
+const tagQuestionContainer = document.getElementById("question-container");
 const tagQuestionLetterText = document.getElementById("question-letter-text");
 const tagQuestionText = document.getElementById("question-text");
 const tagAnswerText = document.getElementById("answer-text");
 const tagAnswerControlContainer = document.getElementById("answer-control-container");
-const tagConfirmWait = document.getElementById("confirm-wait");
+const tagConfirmTitle = document.getElementById("confirm-title");
+const tagConfirmText = document.getElementById("confirm-text");
+const tagConfirmWait = document.getElementById("confirm-card");
 
 // auxiliary functions
 function confirmWaitDisplay () {
-  tagQuestionText.innerHTML = `¿${playerInTurn().name} preparado para continuar?`
-  tagQuestionLetterCircle.hidden = true;
-  tagAnswerText.hidden = true;
-  tagAnswerControlContainer.hidden = true;
+  tagQuestionContainer.hidden = true;
+  tagConfirmTitle.innerHTML = `Cambio de turno`
+  tagConfirmText.innerHTML = `¿${playerInTurn().name} preparado para continuar?`
   tagConfirmWait.hidden = false;
   document.getElementById("confirm-wait-yes").focus();
 }
 function answeringDisplay () {
-  tagQuestionLetterCircle.hidden = false;
-  tagAnswerText.hidden = false;
-  tagAnswerControlContainer.hidden = false;
+  tagQuestionContainer.hidden = false;
+  tagAnswerControlContainer.hidden = false
   tagConfirmWait.hidden = true;
 }
 
@@ -175,8 +168,6 @@ function answering (timeout) {
     }
   }
 }
-
-
 const player1 = new PlayerWeb(
   "Pablo",
   15,
@@ -185,8 +176,9 @@ const player1 = new PlayerWeb(
   [], // Exclude questions
   'player1', // idHTML
   answering, // answering function
-);
-const player2 = new PlayerWeb(
+  colors,  // color squema
+  );
+  const player2 = new PlayerWeb(
   "Jaime",
   60,
   baseQuestions,
@@ -194,7 +186,8 @@ const player2 = new PlayerWeb(
   player1.questions, // Exclude questions
   'player2', // idHTML
   answering, // answering function
-);
+  colors,  // color squema
+  );
 const players = [player1, player2];
 
 let inTurn = Math.floor(Math.random() * 2);
@@ -202,36 +195,41 @@ const otherPlayerIndex = () => (inTurn === 0 ? 1 : 0);
 const playerInTurn = () => players[inTurn];
 const playerWaiting = () => players[otherPlayerIndex()];
 const gameFinished = () => playerInTurn().isConceded()
-  || playerWaiting().isConceded()
-  || (playerInTurn().isFinished() && playerWaiting().isFinished());
+|| playerWaiting().isConceded()
+|| (playerInTurn().isFinished() && playerWaiting().isFinished());
 
-// onclick assign
-document.getElementById("confirm-wait-yes").onclick = confirmContinue;
-document.getElementById("answer-send").onclick = answering;
-document.getElementById("answer-text").onkeypress = (event) => {
+function pasapalabra(infoPlayer1, infoPlayer2 ) {
+  // onclick assign
+  document.getElementById("confirm-wait-yes").onclick = confirmContinue;
+  document.getElementById("answer-send").onclick = answering;
+  document.getElementById("answer-text").onkeypress = (event) => {
   if (event.charCode === 13 && !tagAnswerControlContainer.hidden) {
     answering();
   }
-}
-document.getElementById("answer-pasapalabra").onclick = () => {
+  }
+  document.getElementById("answer-pasapalabra").onclick = () => {
   document.getElementById("answer-text").value = "pasapalabra";
   answering();
-}
-document.getElementById('answer-end').onclick = () => {
+  }
+  document.getElementById('answer-end').onclick = () => {
   document.getElementById("answer-text").value = "end";
   answering();
+  }
+
+  confirmWaitDisplay();
+  tagConfirmTitle.innerHTML = `EMPIEZA PASAPALABRA`;
+
+  let text = `<p>Bienvenidos ${players[0].name} y ${players[1].name}</p>`;
+  text += `<p>En el sorteo ha salido que empiece ${playerInTurn().name}</p>`;
+  text += `<p>¿Estás listo?</p>`;
+  tagConfirmText.innerHTML = text;
+
+  document.getElementById('name-player1').innerHTML = player1.name;
+  document.getElementById('timer-player1').innerHTML = player1.secondsRemaining() + '"';
+  document.getElementById('name-player2').innerHTML = player2.name;
+  document.getElementById('timer-player2').innerHTML = player2.secondsRemaining() + '"';
+
+  player1.updateLetterColors();
 }
 
-confirmWaitDisplay();
-
-let text = `<p>Bienvenidos ${players[0].name} y ${players[1].name}</p>`;
-text += `<p>En el sorteo ha salido que empiece ${playerInTurn().name}</p>`;
-text += '<p>Comienza pasapalabra!</p>';
-tagQuestionText.innerHTML = text;
-
-document.getElementById('name-player1').innerHTML = player1.name;
-document.getElementById('timer-player1').innerHTML = player1.secondsRemaining();
-document.getElementById('name-player2').innerHTML = player2.name;
-document.getElementById('timer-player2').innerHTML = player2.secondsRemaining();
-
-player1.updateLetterColors();
+pasapalabra();
