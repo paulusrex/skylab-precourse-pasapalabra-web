@@ -4,21 +4,21 @@ $letter-diameter: 50px;
 $num-letters: 28;
 $start-angle: -90deg - (360deg / $num-letters) / 2 ;
 
-.container {
-  width: 1300px;
-  margin: auto;
-  display: inline-grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap:25px;
-}
+// .container {
+//   width: 1300px;
+//   margin: auto;
+//   display: inline-grid;
+//   grid-template-columns: 1fr 1fr;
+//   grid-gap:25px;
+// }
 
 .player {
-  margin: 25px;
+  // margin: 25px;
   width: $player-diameter;
   height: $player-diameter;
-  border-radius: 50%;  
+  // border-radius: 50%;  
 
-  background-color: #eee;
+  // background-color: #eee;
 }
 
 .player header {
@@ -28,10 +28,10 @@ $start-angle: -90deg - (360deg / $num-letters) / 2 ;
 
   position: absolute;
   width: $player-diameter * 0.5;
-  background-color: red;
+  background-color: #ccc;
   align-content: center;
   border-radius: 15px;
-  border: 4px solid #ccc;
+  border: 4px solid #aaa;
   transform: translate($player-diameter * 0.25, $player-diameter * .25) ;
 }
 
@@ -42,9 +42,9 @@ $start-angle: -90deg - (360deg / $num-letters) / 2 ;
   position: absolute;
 
   width: $player-diameter * 0.3;
-  background-color: red;
+  background-color: #ccc;
   border-radius: 15px;
-  border: 2px solid #ccc;
+  border: 2px solid #aaa;
   transform: translate($player-diameter * .35, $player-diameter * .4) ;
 }
 
@@ -80,8 +80,17 @@ $start-angle: -90deg - (360deg / $num-letters) / 2 ;
 
 @for $i from 1 to $num-letters {
   .donut div:nth-child(#{$i}) {
-    transform: rotate($start-angle + $i * 360deg / ($num-letters - 1)) translate($donut-diameter / 2) translate(0px) rotate(-($start-angle + $i * 360deg / ($num-letters - 1)));    
+    transform: rotate($start-angle + $i * 360deg / ($num-letters - 1)) translate($donut-diameter / 2) translate(0px) rotate(-($start-angle + $i * 360deg / ($num-letters - 1))); 
+    animation-name: letterActive; 
+    animation-duration: 2s; 
+    animation-iteration-count: 0;   
   }
+}
+
+@keyframes letterActive {
+  0% { background-color: blue; }
+  50% { background-color: aliceblue; color:black; }
+  100% { background-color: blue; }
 }
 
 #questions-container {
