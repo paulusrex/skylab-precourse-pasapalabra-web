@@ -1,11 +1,11 @@
-export const NOT_ANSWERED = 0;
-export const CORRECT = 1;
-export const WRONG = 2;
-export const PASAPALABRA = 3;
-export const END = 4;
-export const TIMEOUT = 5;
+const NOT_ANSWERED = 0;
+const CORRECT = 1;
+const WRONG = 2;
+const PASAPALABRA = 3;
+const END = 4;
+const TIMEOUT = 5;
 
-export class Player {
+class Player {
   constructor(name, secondsToComplete, baseQ, alterQ, excludeQ) {
     this.name = name;
     this.secondsToComplete = secondsToComplete;

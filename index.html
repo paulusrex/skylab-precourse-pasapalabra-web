@@ -9,17 +9,52 @@
     <title>Pasapalabra</title>
   </head>
   <body>
-    <div class="container">
+      <div class="container">
       <div class="row">
         <div class="col-sm-12">
           <h1>PASAPALABRA</h1>
         </div>
       </div>
-      <div class="row">
+      <div class="row" id="init-setup">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-8">
+          <div class="card text-black">
+            <div class="card-header bg-primary text-white">Datos de los jugadores</div>
+            <div class="card-body">
+              <div class="form-row">
+                <div class="form-group col-sm-8">
+                  <label for="intro-name-player1">Jugador 1</label>
+                  <input type="text" class="form-control col-sm-12" id="intro-name-player1"  placeholder="Nombre">
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="intro-time-player1">Tiempo</label>
+                    <input type="number" class="form-control col-sm-6" id="intro-time-player1"  placeholder="Segundos">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-sm-8">
+                  <label for="intro-name-player2">Jugador 2</label>
+                  <input type="text" class="form-control col-sm-12" id="intro-name-player2"  placeholder="Nombre">
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="intro-time-player2">Tiempo</label>
+                    <input type="number" class="form-control col-sm-6" id="intro-time-player2"  placeholder="Segundos">
+                </div>
+              </div>                  
+              <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="includePhilosophyQuestions">
+                <label class="form-check-label" for="includePhilosophyQuestions">Incluir preguntas de filosofía</label>
+              </div>
+              <button class="btn btn-primary" onclick="startGame()">Empezar</button>
+            </div>
+          </div>
+        </div>
+      </div>      
+      <div class="row" id="main-screen" hidden>
         <div class="col-sm-6">
           <div class="player" id="container-player1">
-            <header id="name-player1">PLAYER1</header>
-            <span class="timer" id="timer-player1">---</span>
+            <header id="name-player1">-</header>
+            <span class="timer" id="timer-player1"></span>
             <div class="donut">
                 <div class="letter" id="letter-player1-a">A</div>
                 <div class="letter" id="letter-player1-b">B</div>
@@ -53,8 +88,8 @@
         </div>
         <div class="col-sm-6">
           <div class="player" id="container-player2">          
-            <header id="name-player2">PLAYER2</header>
-            <span class="timer" id="timer-player2">---</span>
+            <header id="name-player2">-</header>
+            <span class="timer" id="timer-player2"></span>
             <div class="donut">
               <div class="letter" id="letter-player2-a">A</div>
               <div class="letter" id="letter-player2-b">B</div>
@@ -87,7 +122,7 @@
           </div>
         </div>
       </div>      
-      <div class="row hidden" id="question-container">
+      <div class="row" id="question-container" hidden>
         <div class="col-sm-1"></div>
         <div class="col-sm-2">
           <div id="question-letter-container">
@@ -101,37 +136,42 @@
             <div class="card-header bg-secondary text-white">Pregunta</div>
             <div class="card-body">
               <p id="question-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae, atque!</p>
-              <input class="form-control" id="answer-text" placeholder="Respuesta">
+              <input class="form-control" id="answer-text" placeholder="Respuesta" onkeypress="onKeyPress(event)">
               <br/>
               <div id="answer-control-container">
                 <div id="answer-control">
-                  <button class="btn btn-outline-primary" id="answer-send">Responder</button>
-                  <button class="btn btn-outline-secondary" id="answer-pasapalabra">Pasapalabra</button>
-                  <button class="btn btn-outline-warning" id="answer-end">Conceder la partida</button>
+                  <button class="btn btn-outline-primary" id="answer-send" onclick="answering()">Responder</button>
+                  <button class="btn btn-outline-secondary" id="answer-pasapalabra" onclick="answering('pasapalabra')">Pasapalabra</button>
+                  <button class="btn btn-outline-warning" id="answer-end" onclick="answering('end')">Conceder la partida</button>
                 </div>
               </div>         
             </div>
           </div>
         </div>
       </div>
-      <div class="row">
+      <div class="row" id="confirm-card" hidden>
         <div class="col-sm-2"></div>
         <div class="col-sm-8">
-          <div class="card" id="confirm-card">
+          <div class="card">
               <div class="card-body" id="confirm-wait">
                 <h5 class="card-title" id="confirm-title">Título</h5>
                 <p class="card-text" id="confirm-text">With supporting text below as a natural lead-in to additional content.</p>
-                <button class="btn btn-primary" id="confirm-wait-yes">Pulsa para continuar</button>
+                <button class="btn btn-primary" id="confirm-wait-yes" onclick="confirmContinue()">Pulsa para continuar</button>
                 <button class="btn btn-warning" id="confirm-wait-concede">Pulsa para conceder</button>
           </div>
         </div>
         </div>        
         </div>
     </div>
+
+
     
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>      
-    <script src="./src/main.js" type="module"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script> 
+    <script src="./src/pasapalabra.js"></script>
+    <script src="./src/questions.js"></script>
+    <script src="./src/main.js"></script>
+
   </body>
 </html>

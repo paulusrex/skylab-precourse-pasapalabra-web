@@ -1,7 +1,3 @@
-import { NOT_ANSWERED, CORRECT, WRONG, PASAPALABRA, END, TIMEOUT } from './pasapalabra.js';
-import { Player } from './pasapalabra.js';
-import { baseQuestions, alterQuestions, philosophyQuestions } from './questions.js';
-
 const colors = {  
   primary: '#2780E3',
   secondary: '#373a3c',
@@ -12,7 +8,6 @@ const colors = {
   light:'#f8f9fa',
   dark:'#373a3c',
 }
-const allAlterQuestions = [...alterQuestions, ...philosophyQuestions];
 
 class PlayerWeb extends Player {
   constructor (name, secondsToComplete, baseQ, alterQ, excludeQ, idHTML, answering, colors) {
@@ -34,7 +29,8 @@ class PlayerWeb extends Player {
   }
 
   changeTimer() {
-    document.getElementById(`timer-${this.idHTML}`).innerHTML = this.secondsRemaining().toString() + '"';
+    const remain = this.secondsRemaining().toString();
+    document.getElementById(`timer-${this.idHTML}`).innerHTML = remain > 0 ? remain + '"' : 'Fin tiempo';
     if (this.timeRemaining() < 0) {
       clearInterval(this.interval);
       this.answering(
@@ -114,8 +110,18 @@ function displayNextQuestion () {
   tagAnswerText.focus();
 }
 
-function answering (timeout) {
-  const answer = timeout ? 'timeout' : document.getElementById("answer-text").value;
+function answering (response) {  
+  let answer; 
+  switch (response){
+    case 'timeout':
+    case 'pasapalabra':
+    case 'end':
+      answer = response;
+      break;
+    default:
+      answer = document.getElementById("answer-text").value;
+      break;
+  }
   let changePlayer = false;
   playerInTurn().checkAnswer(answer);
   switch (playerInTurn().getStatus()) {
@@ -168,27 +174,8 @@ function answering (timeout) {
     }
   }
 }
-const player1 = new PlayerWeb(
-  "Pablo",
-  15,
-  baseQuestions,
-  allAlterQuestions,
-  [], // Exclude questions
-  'player1', // idHTML
-  answering, // answering function
-  colors,  // color squema
-  );
-  const player2 = new PlayerWeb(
-  "Jaime",
-  60,
-  baseQuestions,
-  allAlterQuestions,
-  player1.questions, // Exclude questions
-  'player2', // idHTML
-  answering, // answering function
-  colors,  // color squema
-  );
-const players = [player1, player2];
+
+let players = [];
 
 let inTurn = Math.floor(Math.random() * 2);
 const otherPlayerIndex = () => (inTurn === 0 ? 1 : 0);
@@ -198,23 +185,54 @@ const gameFinished = () => playerInTurn().isConceded()
 || playerWaiting().isConceded()
 || (playerInTurn().isFinished() && playerWaiting().isFinished());
 
-function pasapalabra(infoPlayer1, infoPlayer2 ) {
-  // onclick assign
-  document.getElementById("confirm-wait-yes").onclick = confirmContinue;
-  document.getElementById("answer-send").onclick = answering;
-  document.getElementById("answer-text").onkeypress = (event) => {
+function onKeyPress (e) {
   if (event.charCode === 13 && !tagAnswerControlContainer.hidden) {
     answering();
   }
+}
+
+function startGame() {
+  const namePlayer1 = document.getElementById('intro-name-player1').value;
+  const namePlayer2 = document.getElementById('intro-name-player2').value;
+  const secondsPlayer1 = document.getElementById('intro-time-player1').value;
+  const secondsPlayer2 = document.getElementById('intro-time-player2').value;
+  const includePhilosophyQuestions = document.getElementById('includePhilosophyQuestions').checked;
+  let allAlterQuestions;
+  if (includePhilosophyQuestions) {
+    allAlterQuestions = [...alterQuestions, ...philosophyQuestions];
+  } else {
+    allAlterQuestions = [...alterQuestions];
   }
-  document.getElementById("answer-pasapalabra").onclick = () => {
-  document.getElementById("answer-text").value = "pasapalabra";
-  answering();
-  }
-  document.getElementById('answer-end').onclick = () => {
-  document.getElementById("answer-text").value = "end";
-  answering();
-  }
+  const player1 = new PlayerWeb(
+    namePlayer1,
+    secondsPlayer1,
+    baseQuestions,
+    allAlterQuestions,
+    [], // Exclude questions
+    'player1', // idHTML
+    answering, // answering function
+    colors,  // color squema
+    );
+  const player2 = new PlayerWeb(
+    namePlayer2,
+    secondsPlayer2,
+    baseQuestions,
+    allAlterQuestions,
+    player1.questions, // Exclude questions
+    'player2', // idHTML
+    answering, // answering function
+    colors,  // color squema
+    );  
+  players = [player1, player2];
+
+  document.getElementById('name-player1').innerHTML = player1.name;
+  document.getElementById('timer-player1').innerHTML = player1.secondsRemaining() + '"';
+  document.getElementById('name-player2').innerHTML = player2.name;
+  document.getElementById('timer-player2').innerHTML = player2.secondsRemaining() + '"';
+
+  document.getElementById('init-setup').hidden = true;
+  document.getElementById('main-screen').hidden = false;
+  document.getElementById('confirm-card').hidden = false;
 
   confirmWaitDisplay();
   tagConfirmTitle.innerHTML = `EMPIEZA PASAPALABRA`;
@@ -224,12 +242,5 @@ function pasapalabra(infoPlayer1, infoPlayer2 ) {
   text += `<p>¿Estás listo?</p>`;
   tagConfirmText.innerHTML = text;
 
-  document.getElementById('name-player1').innerHTML = player1.name;
-  document.getElementById('timer-player1').innerHTML = player1.secondsRemaining() + '"';
-  document.getElementById('name-player2').innerHTML = player2.name;
-  document.getElementById('timer-player2').innerHTML = player2.secondsRemaining() + '"';
-
   player1.updateLetterColors();
 }
-
-pasapalabra();

@@ -8,9 +8,7 @@ Question and answers from :
  https://github.com/marioterron/pasapalabra/blob/master/js/app.js -> alterQuestions3
 */
 
-import { NOT_ANSWERED } from "./pasapalabra.js";
-
-export const baseQuestions = [
+const baseQuestions = [
   {
     letter: "a",
     answer: "abducir",
@@ -193,7 +191,7 @@ export const baseQuestions = [
   }
 ];
 
-export const alterQuestions1 = [
+const alterQuestions1 = [
   {
     letter: "c",
     answer: "cantidad",
@@ -845,7 +843,7 @@ export const alterQuestions1 = [
   }
 ];
 
-export const alterQuestions2 = [
+const alterQuestions2 = [
   {
     letter: "a",
     answer: "alicia",
@@ -1023,7 +1021,7 @@ export const alterQuestions2 = [
   }
 ];
 
-export const alterQuestions3 = [
+const alterQuestions3 = [
   {
     letter: "a",
     question:
@@ -1190,9 +1188,9 @@ export const alterQuestions3 = [
   }
 ];
 
-export const alterQuestions = [...alterQuestions1, ...alterQuestions2, ...alterQuestions3];
+const alterQuestions = [...alterQuestions1, ...alterQuestions2, ...alterQuestions3];
 
-export const philosophyQuestions = [
+const philosophyQuestions = [
   {
     letter: "a",
     answer: "Abstracción",
