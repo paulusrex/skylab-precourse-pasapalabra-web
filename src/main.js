@@ -1,16 +1,16 @@
-const colors = {  
+const colors = {
   primary: '#2780E3',
   secondary: '#373a3c',
-  success:'#3FB618',
-  info:'#9954BB',
-  warning:'#FF7518',
-  danger:'#FF0039',
-  light:'#f8f9fa',
-  dark:'#373a3c',
-}
+  success: '#3FB618',
+  info: '#9954BB',
+  warning: '#FF7518',
+  danger: '#FF0039',
+  light: '#f8f9fa',
+  dark: '#373a3c',
+};
 
 class PlayerWeb extends Player {
-  constructor (name, secondsToComplete, baseQ, alterQ, excludeQ, idHTML, answering, colors) {
+  constructor(name, secondsToComplete, baseQ, alterQ, excludeQ, idHTML, answering, colors) {
     super(name, secondsToComplete, baseQ, alterQ, excludeQ);
     this.idHTML = idHTML;
     this.answering = answering;
@@ -23,25 +23,25 @@ class PlayerWeb extends Player {
 
   activatePlayer() {
     const id = `letter-${this.idHTML}-${PlayerWeb.convertLetter(this.getLetter())}`;
-    document.getElementById(id).style.animationIterationCount = "infinite";
+    document.getElementById(id).style.animationIterationCount = 'infinite';
     document.getElementById(`timer-${this.idHTML}`).style = `background-color: ${this.colors.primary}; color: white;`;
     document.getElementById(`name-${this.idHTML}`).style = `background-color: ${this.colors.primary}; color: white;`;
   }
 
   changeTimer() {
     const remain = this.secondsRemaining().toString();
-    document.getElementById(`timer-${this.idHTML}`).innerHTML = remain > 0 ? remain + '"' : 'Fin tiempo';
+    document.getElementById(`timer-${this.idHTML}`).innerHTML = remain > 0 ? `${remain}"` : 'Fin tiempo';
     if (this.timeRemaining() < 0) {
       clearInterval(this.interval);
       this.answering(
-        true // timeout
-         );
+        true, // timeout
+      );
     }
   }
 
   startTimer() {
     super.startTimer();
-    this.interval = setInterval(() => this.changeTimer(),200);
+    this.interval = setInterval(() => this.changeTimer(), 200);
   }
 
   stopTimer() {
@@ -50,76 +50,95 @@ class PlayerWeb extends Player {
   }
 
   updateLetterColors() {
-    document.getElementById(`timer-${this.idHTML}`).style = "";
-    document.getElementById(`name-${this.idHTML}`).style = "";
-    this.questions.forEach(item => {
-      const circle = document.getElementById(`letter-${this.idHTML}-${PlayerWeb.convertLetter(item.letter.toLowerCase())}`)
-      switch (item.status){
+    document.getElementById(`timer-${this.idHTML}`).style = '';
+    document.getElementById(`name-${this.idHTML}`).style = '';
+    this.questions.forEach((item) => {
+      const circle = document.getElementById(`letter-${this.idHTML}-${PlayerWeb.convertLetter(item.letter.toLowerCase())}`);
+      switch (item.status) {
         case TIMEOUT:
         case NOT_ANSWERED:
         case PASAPALABRA:
-          circle.style = `background-color: ${this.colors.primary}; animation-iteration: 0;`
+          circle.style = `background-color: ${this.colors.primary}; animation-iteration: 0;`;
           break;
         case CORRECT:
-          circle.style =  `background-color: ${this.colors.success};`;
+          circle.style = `background-color: ${this.colors.success};`;
           break;
         case WRONG:
         case END:
           circle.style = `background-color: ${this.colors.danger};`;
           break;
+        default:
+          break;
       }
-    })
+    });
   }
 }
 
 // HTML Tags
-const tagQuestionContainer = document.getElementById("question-container");
-const tagQuestionLetterText = document.getElementById("question-letter-text");
-const tagQuestionText = document.getElementById("question-text");
-const tagAnswerText = document.getElementById("answer-text");
-const tagAnswerControlContainer = document.getElementById("answer-control-container");
-const tagConfirmTitle = document.getElementById("confirm-title");
-const tagConfirmText = document.getElementById("confirm-text");
-const tagConfirmWait = document.getElementById("confirm-card");
+const tagQuestionContainer = document.getElementById('question-container');
+const tagQuestionLetterText = document.getElementById('question-letter-text');
+const tagQuestionText = document.getElementById('question-text');
+const tagAnswerText = document.getElementById('answer-text');
+const tagAnswerControlContainer = document.getElementById('answer-control-container');
+const tagConfirmTitle = document.getElementById('confirm-title');
+const tagConfirmText = document.getElementById('confirm-text');
+const tagConfirmWait = document.getElementById('confirm-card');
+
+// control variables and functions
+let players = [];
+
+let inTurn = Math.floor(Math.random() * 2);
+const otherPlayerIndex = () => (inTurn === 0 ? 1 : 0);
+const playerInTurn = () => players[inTurn];
+const playerWaiting = () => players[otherPlayerIndex()];
+const gameFinished = () => (playerInTurn().isConceded() && playerWaiting().isConceded())
+|| (playerInTurn().isFinished() && playerWaiting().isFinished());
+
 
 // auxiliary functions
-function confirmWaitDisplay () {
+function confirmWaitDisplay(timeout) {
   tagQuestionContainer.hidden = true;
-  tagConfirmTitle.innerHTML = `Cambio de turno`
-  tagConfirmText.innerHTML = `¿${playerInTurn().name} preparado para continuar?`
+  if (timeout === TIMEOUT) {
+    tagConfirmTitle.innerHTML = 'Se acabó el tiempo';
+  } else if (timeout === END) {
+    tagConfirmTitle.innerHTML = `${playerWaiting().name} ha concedido la partida`;
+  } else {
+    tagConfirmTitle.innerHTML = 'Cambio de turno';
+  }
+  tagConfirmText.innerHTML = `¿${playerInTurn().name} preparado para continuar?`;
   tagConfirmWait.hidden = false;
-  document.getElementById("confirm-wait-yes").focus();
+  document.getElementById('confirm-wait-yes').focus();
 }
-function answeringDisplay () {
+function answeringDisplay() {
   tagQuestionContainer.hidden = false;
-  tagAnswerControlContainer.hidden = false
+  tagAnswerControlContainer.hidden = false;
   tagConfirmWait.hidden = true;
 }
 
-function confirmContinue () {
+function confirmContinue() {
   answeringDisplay();
   playerInTurn().startTimer();
   displayNextQuestion();
 }
 
-function displayNextQuestion () {
+function displayNextQuestion() {
   tagQuestionLetterText.innerHTML = playerInTurn().getLetter().toUpperCase();
-  tagQuestionText.innerHTML = playerInTurn().getQuestion();  
-  tagAnswerText.value = "";
+  tagQuestionText.innerHTML = playerInTurn().getQuestion();
+  tagAnswerText.value = '';
   playerInTurn().activatePlayer();
   tagAnswerText.focus();
 }
 
-function answering (response) {  
-  let answer; 
-  switch (response){
+function answering(response) {
+  let answer;
+  switch (response) {
     case 'timeout':
     case 'pasapalabra':
     case 'end':
       answer = response;
       break;
     default:
-      answer = document.getElementById("answer-text").value;
+      answer = document.getElementById('answer-text').value;
       break;
   }
   let changePlayer = false;
@@ -141,7 +160,7 @@ function answering (response) {
       }
       playerInTurn().nextQuestion();
       playerInTurn().updateLetterColors();
-      displayNextQuestion();    
+      displayNextQuestion();
       break;
     case PASAPALABRA:
       tagQuestionText.innerHTML = `${playerInTurn().name} pasapalabra`;
@@ -156,47 +175,68 @@ function answering (response) {
       break;
     case TIMEOUT:
     case END:
-      console.log('timeout');
       changePlayer = true;
       playerInTurn().updateLetterColors();
       break;
     default:
       break;
-  }  
-  if (changePlayer) {    
-    playerInTurn().stopTimer();    
+  }
+  if (changePlayer) {
+    playerInTurn().stopTimer();
     tagAnswerControlContainer.hidden = true;
     if (gameFinished()) {
 
     } else {
-      setTimeout (confirmWaitDisplay, 3000);
-      inTurn = otherPlayerIndex();
+      switch (playerInTurn().getStatus()) {
+        case TIMEOUT:
+        case END:
+          inTurn = otherPlayerIndex();
+          confirmWaitDisplay(playerWaiting().getStatus());
+          break;
+        default:
+          setTimeout(confirmWaitDisplay, 3000);
+          inTurn = otherPlayerIndex();
+          break;
+      }
+
     }
   }
 }
 
-let players = [];
-
-let inTurn = Math.floor(Math.random() * 2);
-const otherPlayerIndex = () => (inTurn === 0 ? 1 : 0);
-const playerInTurn = () => players[inTurn];
-const playerWaiting = () => players[otherPlayerIndex()];
-const gameFinished = () => playerInTurn().isConceded()
-|| playerWaiting().isConceded()
-|| (playerInTurn().isFinished() && playerWaiting().isFinished());
-
-function onKeyPress (e) {
+function onKeyPress(e) {
   if (event.charCode === 13 && !tagAnswerControlContainer.hidden) {
     answering();
   }
 }
 
 function startGame() {
-  const namePlayer1 = document.getElementById('intro-name-player1').value;
-  const namePlayer2 = document.getElementById('intro-name-player2').value;
-  const secondsPlayer1 = document.getElementById('intro-time-player1').value;
-  const secondsPlayer2 = document.getElementById('intro-time-player2').value;
+  const validateName = (id) => {
+    const tagName = document.getElementById(id);
+    tagName.classList.remove('is-valid', 'is-invalid');
+    const name = tagName.value;
+    tagName.classList.add(name !== '' ? 'is-valid' : 'is-invalid');
+    return name;  
+  }
+  const validateSeconds = (id) => {
+    const tagName = document.getElementById(id);
+    tagName.classList.remove('is-valid', 'is-invalid');
+    const seconds = parseInt(tagName.value);
+    tagName.classList.add(Number.isNaN(seconds) || seconds < 10 ? 'is-invalid' : 'is-valid');
+    return seconds;
+  }
+  const allValid = (...args) => {
+    return args.every((id) => document.getElementById(id).classList.contains('is-valid'));
+  }
+
+  const namePlayer1 = validateName('intro-name-player1');
+  const namePlayer2 = validateName('intro-name-player2');
+  const secondsPlayer1 = validateSeconds('intro-time-player1');
+  const secondsPlayer2 = validateSeconds('intro-time-player2');
+  if (!allValid('intro-name-player1','intro-name-player2','intro-time-player1','intro-time-player1')) {
+    return;
+  }
   const includePhilosophyQuestions = document.getElementById('includePhilosophyQuestions').checked;
+
   let allAlterQuestions;
   if (includePhilosophyQuestions) {
     allAlterQuestions = [...alterQuestions, ...philosophyQuestions];
@@ -211,8 +251,8 @@ function startGame() {
     [], // Exclude questions
     'player1', // idHTML
     answering, // answering function
-    colors,  // color squema
-    );
+    colors, // color squema
+  );
   const player2 = new PlayerWeb(
     namePlayer2,
     secondsPlayer2,
@@ -221,25 +261,25 @@ function startGame() {
     player1.questions, // Exclude questions
     'player2', // idHTML
     answering, // answering function
-    colors,  // color squema
-    );  
+    colors, // color squema
+  );
   players = [player1, player2];
 
   document.getElementById('name-player1').innerHTML = player1.name;
-  document.getElementById('timer-player1').innerHTML = player1.secondsRemaining() + '"';
+  document.getElementById('timer-player1').innerHTML = `${player1.secondsRemaining()}"`;
   document.getElementById('name-player2').innerHTML = player2.name;
-  document.getElementById('timer-player2').innerHTML = player2.secondsRemaining() + '"';
+  document.getElementById('timer-player2').innerHTML = `${player2.secondsRemaining()}"`;
 
   document.getElementById('init-setup').hidden = true;
   document.getElementById('main-screen').hidden = false;
   document.getElementById('confirm-card').hidden = false;
 
   confirmWaitDisplay();
-  tagConfirmTitle.innerHTML = `EMPIEZA PASAPALABRA`;
+  tagConfirmTitle.innerHTML = 'EMPIEZA PASAPALABRA';
 
   let text = `<p>Bienvenidos ${players[0].name} y ${players[1].name}</p>`;
   text += `<p>En el sorteo ha salido que empiece ${playerInTurn().name}</p>`;
-  text += `<p>¿Estás listo?</p>`;
+  text += '<p>¿Estás listo?</p>';
   tagConfirmText.innerHTML = text;
 
   player1.updateLetterColors();
