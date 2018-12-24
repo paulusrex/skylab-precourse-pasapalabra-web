@@ -14,91 +14,82 @@
     <title>Pasapalabra</title>
   </head>
   <body>
+    <div class="modal fade" id="modal-init-setup" role="dialog" data-toggle="modal" data-backdrop="false" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header bg-primary text-white">
+            <div class="modal-title">
+              Datos de los jugadores
+            </div>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+            <div class="container-fluid">
+              <div class="row">
+                <div class="col-2"></div>
+                <div class="col-8">
+                  <div class="form-row">
+                    <div class="form-group col-sm-8">
+                      <label for="intro-name-player1">Jugador 1</label>
+                      <input type="text" class="form-control col-sm-12" id="intro-name-player1" placeholder="Nombre" required />
+                      <div class="invalid-feedback">
+                        Pon el nombre del jugador 1
+                      </div>
+                    </div>
+                    <div class="form-group col-sm-4">
+                      <label for="intro-time-player1">Tiempo</label>
+                      <input type="number" class="form-control col-sm-6" id="intro-time-player1" placeholder="Segundos" required />
+                      <div class="invalid-feedback">
+                        Pon el tiempo para el jugador 1. Mayor de 10 segundos
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group col-sm-8">
+                      <label for="intro-name-player2">Jugador 2</label>
+                      <input type="text" class="form-control col-sm-12" id="intro-name-player2" placeholder="Nombre" required />
+                      <div class="invalid-feedback">
+                        Pon el nombre del jugador 2
+                      </div>
+                    </div>
+                    <div class="form-group col-sm-4">
+                      <label for="intro-time-player2">Tiempo</label>
+                      <input type="number" class="form-control col-sm-6" id="intro-time-player2" placeholder="Segundos" required />
+                      <div class="invalid-feedback">
+                        Pon el tiempo para el jugador 2. Mayor de 10 segundos
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group form-check">
+                    <input type="checkbox" class="form-check-input" id="includePhilosophyQuestions" />
+                    <label class="form-check-label" for="includePhilosophyQuestions">Incluir preguntas de filosofía</label>
+                  </div>                  
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-primary" onclick="startGame()" >
+              Empezar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="container">
       <div class="row mb-4">
         <div class="col-sm-12"><h1>PASAPALABRA</h1></div>
       </div>
-      <div class="row" id="init-setup">
-        <div class="col-sm-2"></div>
-        <div class="col-sm-8">
-          <div class="card text-black">
-            <div class="card-header bg-primary text-white">
-              Datos de los jugadores
-            </div>
-            <div class="card-body">
-                <div class="form-row">
-                  <div class="form-group col-sm-8">
-                    <label for="intro-name-player1">Jugador 1</label>
-                    <input
-                      type="text"
-                      class="form-control col-sm-12"
-                      id="intro-name-player1"
-                      placeholder="Nombre"
-                      required
-                    />
-                    <div class="invalid-feedback">
-                      Pon el nombre del jugador 1
-                    </div>
-                    </div>
-                  <div class="form-group col-sm-4">
-                    <label for="intro-time-player1">Tiempo</label>
-                    <input
-                      type="number"
-                      class="form-control col-sm-6"
-                      id="intro-time-player1"
-                      placeholder="Segundos"
-                      required
-                    />
-                    <div class="invalid-feedback">
-                      Pon el tiempo para el jugador 1. Mayor de 10 segundos
-                    </div>
-                  </div>
-                </div>
-                <div class="form-row">
-                  <div class="form-group col-sm-8">
-                    <label for="intro-name-player2">Jugador 2</label>
-                    <input
-                      type="text"
-                      class="form-control col-sm-12"
-                      id="intro-name-player2"
-                      placeholder="Nombre"
-                      required
-                    />
-                    <div class="invalid-feedback">
-                      Pon el nombre del jugador 2
-                    </div>
-                  </div>
-                  <div class="form-group col-sm-4">
-                    <label for="intro-time-player2">Tiempo</label>
-                    <input
-                      type="number"
-                      class="form-control col-sm-6"
-                      id="intro-time-player2"
-                      placeholder="Segundos"
-                      required
-                    />
-                    <div class="invalid-feedback">
-                      Pon el tiempo para el jugador 2. Mayor de 10 segundos
-                    </div>
-                  </div>
-                </div>
-                <div class="form-group form-check">
-                  <input
-                    type="checkbox"
-                    class="form-check-input"
-                    id="includePhilosophyQuestions"
-                  />
-                  <label
-                    class="form-check-label"
-                    for="includePhilosophyQuestions"
-                    >Incluir preguntas de filosofía</label
-                  >
-                </div>
-                <button class="btn btn-primary" onclick="startGame()">
-                  Empezar
-                </button>
-            </div>
-          </div>
+      <div class="row" id="intro">
+        <div class="col-2"></div>
+        <div class="col-8">
+          <p>Pasapalabra es un concurso de televisión español emitido desde el 10 de julio de 2000 en diferentes cadenas. Originalmente se emitía a través del canal Antena 3, donde permaneció hasta 2006, cuando el programa dejó de emitirse. Un año después, en 2007, el programa regresaría en Telecinco, que lo emite desde entonces.2​ Está basado en el formato original británico «The Alphabet Game»,3​ y en él, dos concursantes intentan acumular segundos en varias pruebas con palabras, que servirán para tener más tiempo para contestar a todas las definiciones de la prueba final, llamada «el rosco».</p>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal-init-setup">
+              Introducir los datos de los jugadores
+            </button>
         </div>
       </div>
       <div class="row" id="main-screen" hidden>

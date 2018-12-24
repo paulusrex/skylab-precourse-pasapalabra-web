@@ -218,10 +218,10 @@ function startGame() {
     return name;  
   }
   const validateSeconds = (id) => {
-    const tagName = document.getElementById(id);
-    tagName.classList.remove('is-valid', 'is-invalid');
-    const seconds = parseInt(tagName.value);
-    tagName.classList.add(Number.isNaN(seconds) || seconds < 10 ? 'is-invalid' : 'is-valid');
+    const tagTime = document.getElementById(id);
+    tagTime.classList.remove('is-valid', 'is-invalid');
+    const seconds = parseInt(tagTime.value);
+    tagTime.classList.add(Number.isNaN(seconds) || (seconds < 10) ? 'is-invalid' : 'is-valid');
     return seconds;
   }
   const allValid = (...args) => {
@@ -235,6 +235,7 @@ function startGame() {
   if (!allValid('intro-name-player1','intro-name-player2','intro-time-player1','intro-time-player1')) {
     return;
   }
+  $("#modal-init-setup").modal('hide');
   const includePhilosophyQuestions = document.getElementById('includePhilosophyQuestions').checked;
 
   let allAlterQuestions;
@@ -270,7 +271,7 @@ function startGame() {
   document.getElementById('name-player2').innerHTML = player2.name;
   document.getElementById('timer-player2').innerHTML = `${player2.secondsRemaining()}"`;
 
-  document.getElementById('init-setup').hidden = true;
+  document.getElementById('intro').hidden = true;
   document.getElementById('main-screen').hidden = false;
   document.getElementById('confirm-card').hidden = false;
 
