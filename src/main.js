@@ -183,9 +183,15 @@ function answering(response) {
   }
   if (changePlayer) {
     playerInTurn().stopTimer();
-    tagAnswerControlContainer.hidden = true;
+    tagAnswerControlContainer.hidden = true;    
     if (gameFinished()) {
-
+      const whoWon = Player.whoWins(players[0], players[1]);
+      const whoLost = Player.whoLose(players[0], players[1]);
+      document.getElementById("end-game-header").innerHTML = "Ha ganado " + whoWon.name;
+      let results = `${whoWon.name} acertó ${whoWon.countCorrect()} y falló ${whoWon.countWrong()}\n`;
+      results += `${whoLost.name} acertó ${whoLost.countCorrect()} y falló ${whoLost.countWrong()}`;
+      document.getElementById("end-game-text").innerHTML = results;
+      $("#modal-end-game").modal('show');
     } else {
       switch (playerInTurn().getStatus()) {
         case TIMEOUT:

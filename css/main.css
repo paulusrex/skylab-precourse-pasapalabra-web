@@ -399,4 +399,8 @@ h1 {
   font-size: 3.5rem;
   color: white;
 }
+
+#modal-end-game-body {
+  background-image: url("../img/fireworks-1758_640.jpg");
+}
 /*# sourceMappingURL=main.css.map */
