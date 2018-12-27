@@ -115,10 +115,14 @@ function answeringDisplay() {
   tagConfirmWait.hidden = true;
 }
 
-function confirmContinue() {
-  answeringDisplay();
-  playerInTurn().startTimer();
-  displayNextQuestion();
+function confirmContinue(concede) {
+  if (!concede) {
+    answeringDisplay();
+    playerInTurn().startTimer();
+    displayNextQuestion();
+  } else {
+    answering('end');
+  }
 }
 
 function displayNextQuestion() {
@@ -187,9 +191,15 @@ function answering(response) {
     if (gameFinished()) {
       const whoWon = Player.whoWins(players[0], players[1]);
       const whoLost = Player.whoLose(players[0], players[1]);
-      document.getElementById("end-game-header").innerHTML = "Ha ganado " + whoWon.name;
-      let results = `${whoWon.name} acertó ${whoWon.countCorrect()} y falló ${whoWon.countWrong()}\n`;
-      results += `${whoLost.name} acertó ${whoLost.countCorrect()} y falló ${whoLost.countWrong()}`;
+      if (whoWon !== null) {
+        document.getElementById("end-game-header").innerHTML = "Ha ganado " + whoWon.name;
+      } else {
+        document.getElementById("end-game-header").innerHTML = "¡¡Empate!!";
+        whoWon = players[0];
+        whoLost = players[1];
+      }
+      let results = `<p>${whoWon.name} acertó ${whoWon.countCorrect()} y falló ${whoWon.countWrong()}${whoWon.isConceded() ? '. Se retiró' : ''}</p>`;
+      results += `<p>${whoLost.name} acertó ${whoLost.countCorrect()} y falló ${whoLost.countWrong()}${whoLost.isConceded() ? '. Se retiró' : ''}</p>`;
       document.getElementById("end-game-text").innerHTML = results;
       $("#modal-end-game").modal('show');
     } else {

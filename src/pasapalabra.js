@@ -36,6 +36,9 @@ class Player {
 
   static whoWins(player1, player2) {
     const compare = (p1, p2, gt, lt, eq) => (p1 > p2 ? gt : p1 < p2 ? lt : eq);
+    if (player1.isConceded() && player2.isConceded()) {
+      return null;
+    }
     let winner = player1.isConceded() ? player2 : null;
     winner = winner || (player2.isConceded() ? player1 : null);
     winner = winner || compare(player1.countCorrect(), player2.countCorrect(), player1, player2, null);
@@ -45,7 +48,11 @@ class Player {
   }
 
   static whoLose(player1, player2) {
-    return Player.whoWins(player1, player2) === player1 ? player2 : player1;
+    const playerWhoWon = Player.whoWins(player1, player2);
+    if (playerWhoWon === null) {
+      return null;
+    }
+    return playerWhoWon === player1 ? player2 : player1;
   }
 
   startTimer() {
